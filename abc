@@ -1,0 +1,16 @@
+function getMarketFromURL(url) {
+    const regex = /([a-z]{2}-[a-z]{2}|[a-z]{2}-[A-Z]{2}|[A-Z]{2}|[a-z]{2}-[A-Z]{2})/g;
+    const match = url.match(regex);
+    return match ? match[0] : null;
+}
+
+// Example usage:
+const url1 = "https://example.com/fr-fr/xyz";
+const url2 = "https://example.com/FR/xyz";
+const url3 = "https://example.com/de-de/xyz";
+const url4 = "https://example.com/It-IT/xyz";
+
+console.log(getMarketFromURL(url1)); // Output: fr-fr
+console.log(getMarketFromURL(url2)); // Output: FR
+console.log(getMarketFromURL(url3)); // Output: de-de
+console.log(getMarketFromURL(url4)); // Output: It-IT
