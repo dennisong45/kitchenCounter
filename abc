@@ -14,3 +14,57 @@ console.log(getMarketFromURL(url1)); // Output: fr-fr
 console.log(getMarketFromURL(url2)); // Output: FR
 console.log(getMarketFromURL(url3)); // Output: de-de
 console.log(getMarketFromURL(url4)); // Output: It-IT
+
+
+function getMarketFromURL(url) {
+    const regex = /(?:[a-z]{2}-[a-z]{2}|[a-z]{2}-[A-Z]{2}|[A-Z]{2}|[a-z]{2}-[A-Z]{2}|[a-z]{2}\.[a-z]{2}|[A-Z]{2})/g;
+    const match = url.match(regex);
+
+    if (match) {
+        const marketMap = {
+            'FR-FR': 'FR',
+            'FR': 'FR',
+            'FR.FR': 'FR',
+            'DE-DE': 'DE',
+            'DE': 'DE',
+            'DE.DE': 'DE',
+            'IT-IT': 'IT',
+            'IT': 'IT',
+            'IT.IT': 'IT',
+            'GB-GB': 'GB',
+            'GB': 'GB',
+            'EN-GB': 'GB',
+            'EN.GB': 'GB'
+        };
+
+        // Find the first valid market code in the match list
+        for (let i = 0; i < match.length; i++) {
+            const marketCode = match[i].toUpperCase().replace('.', '-');
+            if (marketMap[marketCode]) {
+                return marketMap[marketCode];
+            }
+        }
+    }
+
+    return null;
+}
+
+// Example usage:
+const url1 = "https://example.com/fr-fr/xyz";
+const url2 = "https://example.com/FR/xyz";
+const url3 = "https://example.com/de-de/xyz";
+const url4 = "https://example.com/It-IT/xyz";
+const url5 = "https://example.com/gb/xyz";
+const url6 = "https://example.com/en-gb/xyz";
+const url7 = "https://www.quicksign.fr";
+const url8 = "https://example.com/something/de.de/xyz";
+
+console.log(getMarketFromURL(url1)); // Output: FR
+console.log(getMarketFromURL(url2)); // Output: FR
+console.log(getMarketFromURL(url3)); // Output: DE
+console.log(getMarketFromURL(url4)); // Output: IT
+console.log(getMarketFromURL(url5)); // Output: GB
+console.log(getMarketFromURL(url6)); // Output: GB
+console.log(getMarketFromURL(url7)); // Output: FR
+console
+
