@@ -19,6 +19,7 @@ console.log(getMarketFromURL(url4)); // Output: It-IT
 function getMarketFromURL(url) {
     const regex = /(?:[a-z]{2}-[a-z]{2}|[a-z]{2}-[A-Z]{2}|[A-Z]{2}|[a-z]{2}-[A-Z]{2}|[a-z]{2}\.[a-z]{2}|[A-Z]{2})/g;
     const match = url.match(regex);
+const regex = /(?:[a-z]{2}-[a-z]{2}|[a-z]{2}-[A-Z]{2}|[A-Z]{2}|[a-z]{2}|[a-z]{2}\.[a-z]{2}|[A-Z]{2})/g;
 
     if (match) {
         const marketMap = {
