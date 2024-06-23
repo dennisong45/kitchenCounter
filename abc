@@ -14,6 +14,7 @@ console.log(getMarketFromURL(url1)); // Output: fr-fr
 console.log(getMarketFromURL(url2)); // Output: FR
 console.log(getMarketFromURL(url3)); // Output: de-de
 console.log(getMarketFromURL(url4)); // Output: It-IT
+    const path = url.replace(/^https?:\/\/[^\/]+\/?/, '');
 
 
 function getMarketFromURL(url) {
