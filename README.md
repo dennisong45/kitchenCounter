@@ -49,6 +49,17 @@ Resource Optimization: It reduces the load on our internal servers, allowing bet
 Security measures:
 
 Encrypted Communication: SSL/TLS encryption for all data exchanges.
+
+When our application scans a site like americanexpress.com, it has to make multiple network requests to interact with various third-party services and resources. Here’s a simplified breakdown:
+
+Main Site Request: Loading the main page of americanexpress.com.
+CDN Requests: Requests to multiple Content Delivery Networks (CDNs) that serve static assets like images, scripts, and stylesheets.
+Third-Party Services: Interaction with third-party services for analytics, marketing, and customer interaction tools.
+APIs: Calls to various APIs that the site relies on for dynamic content.
+Ad Networks: Requests to various ad networks and trackers.
+
+
+and we are talking
 Access Control: Strict access controls for authorized personnel only.
 Regular Audits: Periodic security audits and penetration testing.
 Compliance: Adherence to relevant data protection regulations.
