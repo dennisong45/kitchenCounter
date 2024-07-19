@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>D3.js Animated Flow Chart Example</title>
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <style>
+    .node {
+      fill: lightblue;
+      stroke: #333;
+      stroke-width: 1.5px;
+    }
+    #HarvestX_UI {
+      fill: lightgreen;
+    }
+    #HarvestX_API_Coordinator {
+      fill: lightcoral;
+    }
+    #HarvestX_Scanner {
+      fill: lightblue;
+    }
+    #Pages {
+      fill: lightgoldenrodyellow;
+    }
+    #Proxy {
+      fill: lightgray;
+      stroke: #333;
+      stroke-width: 1.5px;
+    }
+    .link {
+      fill: none;
+      stroke: #333;
+      stroke-width: 1.5px;
+      marker-end: url(#arrow);
+    }
+    .container {
+      fill: lightyellow;
+      stroke: #333;
+      stroke-width: 2px;
+    }
+    text {
+      font-family: sans-serif;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <svg width="1200" height="600"></svg>
+
+  <script>
+    // Set up the SVG canvas dimensions
+    const width = 1200;
+    const height = 600;
+
+    // Create an SVG element
+    const svg = d3.select("svg")
+      .attr("width", width)
+      .attr("height", height);
+
+    // Define the data for the nodes and links
+    const nodes = [
+      { id: "HarvestX UI", x: 100, y: 300, r: 70 },
+      { id: "HarvestX API Coordinator", x: 300, y: 300, r: 70 },
+      { id: "HarvestX Scanner", x: 500, y: 300, r: 70 },
+      { id: "Proxy", x: 700, y: 300, r: 30 },
+      { id: "Pages 1", x: 900, y: 150, r: 40 },
+      { id: "Pages 2", x: 900, y: 300, r: 40 },
+      { id: "Pages 3", x: 900, y: 450, r: 40 }
+    ];
+
+    const links = [
+      { source: "HarvestX UI", target: "HarvestX API Coordinator" },
+      { source: "HarvestX API Coordinator", target: "HarvestX Scanner" },
+      { source: "HarvestX Scanner", target: "Proxy" },
+      { source: "Proxy", target: "Pages 1" },
+      { source: "Proxy", target: "Pages 2" },
+      { source: "Proxy", target: "Pages 3" }
+    ];
+
+    // Define the arrow marker
+    svg.append("defs").append("marker")
+      .attr("id", "arrow")
+      .attr("viewBox", "0 0 10 10")
+      .attr("refX", 10)
+      .attr("refY", 5)
+      .attr("markerWidth", 6)
+      .attr("markerHeight", 6)
+      .attr("orient", "auto-start-reverse")
+      .append("path")
+      .attr("d", "M 0 0 L 10 5 L 0 10 Z")
+      .attr("fill", "#333");
+
+    // Create the GCP Hydra container
+    svg.append("rect")
+      .attr("class", "container")
+      .attr("x", 30)
+      .attr("y", 50)
+      .attr("width", 750)
+      .attr("height", 500);
+
+    svg.append("text")
+      .attr("x", 425)
+      .attr("y", 40)
+      .attr("text-anchor", "middle")
+      .attr("font-size", "16px")
+      .text("GCP Hydra");
+
+    // Function to calculate the endpoint of a link just outside the node
+    function calculateEndpoint(source, target) {
+      const dx = target.x - source.x;
+      const dy = target.y - source.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const offsetX = (dx * source.r) / distance;
+      const offsetY = (dy * source.r) / distance;
+      return {
+        x: target.x - offsetX,
+        y: target.y - offsetY
+      };
+    }
+
+    // Create the links with animation
+    links.forEach((d, i) => {
+      const sourceNode = nodes.find(n => n.id === d.source);
+      const targetNode = nodes.find(n => n.id === d.target);
+      const endPoint = calculateEndpoint(sourceNode, targetNode);
+
+      svg.append("line")
+        .attr("class", "link")
+        .attr("x1", sourceNode.x)
+        .attr("y1", sourceNode.y)
+        .attr("x2", sourceNode.x)
+        .attr("y2", sourceNode.y)
+        .transition()
+        .delay(i * 1000)
+        .duration(2000)
+        .attr("x2", endPoint.x)
+        .attr("y2", endPoint.y);
+    });
+
+    // Create the nodes
+    svg.selectAll(".node")
+      .data(nodes.filter(d => d.id !== "Proxy"))
+      .enter().append("circle")
+      .attr("class", "node")
+      .attr("id", d => d.id.replace(/\s+/g, '_'))
+      .attr("cx", d => d.x)
+      .attr("cy", d => d.y)
+      .attr("r", d => d.r);
+
+    // Create the Proxy node as a cylinder
+    const proxy = svg.append("g")
+      .attr("id", "Proxy");
+
+    proxy.append("ellipse")
+      .attr("cx", 700)
+      .attr("cy", 280)
+      .attr("rx", 30)
+      .attr("ry", 20);
+
+    proxy.append("rect")
+      .attr("x", 670)
+      .attr("y", 280)
+      .attr("width", 60)
+      .attr("height", 40);
+
+
+    // Add labels to the nodes
+    svg.selectAll(".label")
+      .data(nodes)
+      .enter().append("text")
+      .attr("x", d => d.id === "Proxy" ? 700 : d.x)
+      .attr("y", d => d.id === "Proxy" ? 300 : d.y)
+      .attr("dy", ".35em")
+      .attr("text-anchor", "middle")
+      .attr("font-size", d => d.id.startsWith("Pages") ? "10px" : "12px")
+      .text(d => d.id);
+  </script>
+</body>
+</html>
