@@ -1,0 +1,17 @@
+const csvData = `"https://www.x.com,""https://www.x.com/fr-fr/"`;
+
+// Define a regex pattern to match URLs inside double quotes
+const pattern = /"([^"]*)"/g;
+
+// Find all matches
+const matches = [];
+let match;
+
+while ((match = pattern.exec(csvData)) !== null) {
+  matches.push(match[1]);
+}
+
+// Print the extracted URLs
+matches.forEach((url, index) => {
+  console.log(`URL ${index + 1}: ${url}`);
+});
