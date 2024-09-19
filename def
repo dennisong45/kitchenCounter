@@ -1,0 +1,55 @@
+package main
+
+import (
+    "context"
+    "fmt"
+    "log"
+    "time"
+    
+    "cloud.google.com/go/cloudsqlconn"
+    "gorm.io/driver/postgres"
+    "gorm.io/gorm"
+)
+
+func main() {
+    // Create a new context
+    ctx := context.Background()
+
+    // Configure your instance connection name in the format project:region:instance
+    instanceConnectionName := "your-project-id:your-region:your-instance-id"
+
+    // Use the Cloud SQL Connector to establish a connection
+    connector, err := cloudsqlconn.NewConnector(ctx, instanceConnectionName, cloudsqlconn.WithIAMAuthN())
+    if err != nil {
+        log.Fatalf("failed to create connector: %v", err)
+    }
+    defer connector.Close()
+
+    // Now you can configure the connection string with the connector
+    postgresqlDbInfo := fmt.Sprintf("user=your-username password=your-password dbname=your-db-name sslmode=disable")
+    
+    // Establish connection with the connector
+    db, err := sql.OpenDB(connector, postgresqlDbInfo)
+    if err != nil {
+        log.Fatalf("failed to connect to the database: %v", err)
+    }
+
+    // Use GORM with the DB connection
+    gormDB, err := gorm.Open(postgres.New(postgres.Config{
+        Conn: db,
+    }), &gorm.Config{})
+    
+    if err != nil {
+        log.Fatalf("failed to set up gorm: %v", err)
+    }
+
+    // Ping the database to check the connection
+    ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+    defer cancel()
+
+    if err := db.PingContext(ctx); err != nil {
+        log.Fatalf("failed to ping database: %v", err)
+    }
+
+    fmt.Println("Successfully connected to the Cloud SQL instance!")
+}
